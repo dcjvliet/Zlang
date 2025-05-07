@@ -77,5 +77,58 @@ extern Token nextToken(const char **input)
         return (Token){TOKEN_STRING, str};
     }
 
+    // check for colon token
+    if (**input == ':')
+    {
+        (*input)++;
+        return (Token){TOKEN_COLON, NULL};
+    }
+
+    // check for equals token
+    if (**input == '=')
+    {
+        (*input)++;
+        return (Token){TOKEN_EQUAL, NULL};
+    }
+
+    // check for the int literal token
+    if (isdigit(**input))
+    {
+        const char *start = *input;
+        while (isdigit(**input))
+        {
+            (*input)++;
+        }
+        int len = *input - start;
+        char *num = malloc(len + 1);
+        strncpy(num, start, len);
+        num[len] = '\0';
+        return (Token){TOKEN_INT_LITERAL, num};
+    }
+
+    // check for the name of variable (identifier token)
+    // check if character is alphanumeric
+    if (isalnum(**input))
+    {
+        const char *start = *input;
+        while (isalnum(**input))
+        {
+            (*input)++;
+        }
+        int len = *input - start;
+        char *name = malloc(len + 1);
+        strncpy(name, start, len);
+        name[len] = '\0';
+
+        // see if it's just type hinting
+        if (strncmp(name, "int", 3) == 0)
+        {
+            return (Token){TOKEN_TYPE, "int"};
+        }
+
+        return (Token){TOKEN_IDENTIFIER, name};
+    }
+
+    // if it didn't pass any of the previous checks, it's an unknown token and we should raise an error
     return (Token){TOKEN_UNKNOWN, NULL};
 }

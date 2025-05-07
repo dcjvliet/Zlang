@@ -1,12 +1,22 @@
 // define our token types
 typedef enum
 {
-    TOKEN_YAP,     // print
-    TOKEN_ARROW,   // syntax for message to print
-    TOKEN_STRING,  // message to print
+    // common use tokens
     TOKEN_COMMENT, // start of comment
     TOKEN_UNKNOWN, // unknown token
-    TOKEN_EOF      // end of file token
+    TOKEN_EOF,     // end of file token
+
+    // tokens for printing
+    TOKEN_YAP,    // print
+    TOKEN_ARROW,  // syntax for message to print
+    TOKEN_STRING, // message to print
+
+    // tokens for declaring variables
+    TOKEN_IDENTIFIER, // variable name
+    TOKEN_COLON,      // :
+    TOKEN_TYPE,       // type of the variable
+    TOKEN_EQUAL,      // =
+    TOKEN_INT_LITERAL // value of an int type
 } TokenType;
 
 // define token

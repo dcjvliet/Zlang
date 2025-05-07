@@ -1,0 +1,3 @@
+yap -> "Creating a variable"
+:skull: create a new variable called x, of type int, with the value 42
+x: int = 42

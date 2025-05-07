@@ -1,5 +1,16 @@
 #include "parser.c"
 
+typedef struct
+{
+    char *name;
+    char *type;
+    int intValue;
+} Variable;
+
+#define MAX_VARS 1024
+Variable varTable[MAX_VARS];
+int varCount = 0;
+
 void executeProgram(ASTNode **nodes, int count)
 {
     for (int i = 0; i < count; i++)
@@ -8,6 +19,27 @@ void executeProgram(ASTNode **nodes, int count)
         if (node->type == NODE_YAP)
         {
             printf("%s\n", node->value);
+        }
+        else if (node->type == NODE_VAR_DECL)
+        {
+            if (varCount >= MAX_VARS)
+            {
+                fprintf(stderr, "Variable table overflow\n");
+                exit(1);
+            }
+
+            // add a new variable to the variable table
+            Variable *v = &varTable[varCount++];
+            v->name = node->name;
+            v->type = node->varType;
+
+            if (strncmp(node->varType, "int", 3) == 0)
+            {
+                v->intValue = atoi(node->value);
+            }
+
+            // confirm that we created the variable
+            printf("Declared %s: %s = %d\n", v->name, v->type, v->intValue);
         }
     }
 }
