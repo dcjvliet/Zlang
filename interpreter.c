@@ -5,11 +5,13 @@ typedef struct
     char *name;
     char *type;
     int intValue;
+    float floatValue;
 } Variable;
 
 #define MAX_VARS 1024
 Variable varTable[MAX_VARS];
 int varCount = 0;
+int showDebugging = 0;
 
 void executeProgram(ASTNode **nodes, int count)
 {
@@ -36,10 +38,25 @@ void executeProgram(ASTNode **nodes, int count)
             if (strncmp(node->varType, "int", 3) == 0)
             {
                 v->intValue = atoi(node->value);
+                if (showDebugging)
+                {
+                    // confirm that we created the variable
+                    printf("Declared %s: %s = %d\n", v->name, v->type, v->intValue);
+                }
             }
-
-            // confirm that we created the variable
-            printf("Declared %s: %s = %d\n", v->name, v->type, v->intValue);
+            else if (strncmp(node->varType, "float", 5) == 0)
+            {
+                v->floatValue = atof(node->value);
+                if (showDebugging)
+                {
+                    // confirm that we created the variable
+                    printf("Declared %s: %s = %f\n", v->name, v->type, v->floatValue);
+                }
+            }
+        }
+        else if (node->type == NODE_DEBUGGING)
+        {
+            showDebugging = 1;
         }
     }
 }

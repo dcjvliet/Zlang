@@ -3,7 +3,8 @@
 typedef enum
 {
     NODE_YAP,
-    NODE_VAR_DECL
+    NODE_VAR_DECL,
+    NODE_DEBUGGING
 } ASTNodeType;
 
 typedef struct
@@ -122,10 +123,10 @@ ASTNode *parseVarDecl(const char **input)
         tok = nextToken(input);
     }
 
-    // make sure we have a value for the int
-    if (tok.type != TOKEN_INT_LITERAL)
+    // make sure we have a value for variable
+    if ((tok.type != TOKEN_INT_LITERAL && strncmp(varType, "int", 3) == 0) || (tok.type != TOKEN_FLOAT_LITERAL && strncmp(varType, "float", 5) == 0))
     {
-        fprintf(stderr, "Expected integer literal after '='\n");
+        fprintf(stderr, "Expected variable literal after '='\n");
         exit(1);
     }
     char *value = tok.value;
@@ -135,6 +136,37 @@ ASTNode *parseVarDecl(const char **input)
     node->name = varName;
     node->varType = varType;
     node->value = value;
+    return node;
+}
+
+ASTNode *parseDebugging(const char **input)
+{
+    Token tok = nextToken(input);
+    while (tok.type == TOKEN_COMMENT)
+    {
+        tok = nextToken(input);
+    }
+
+    if (tok.type != TOKEN_SPITTIN)
+    {
+        fprintf(stderr, "Expected 'spittin'\n");
+        exit(1);
+    }
+
+    tok = nextToken(input);
+    while (tok.type == TOKEN_COMMENT)
+    {
+        tok = nextToken(input);
+    }
+
+    if (tok.type != TOKEN_FAX)
+    {
+        fprintf(stderr, "Expected 'fax' after 'spittin'\n");
+        exit(1);
+    }
+
+    ASTNode *node = malloc(sizeof(ASTNode));
+    node->type = NODE_DEBUGGING;
     return node;
 }
 
@@ -176,6 +208,20 @@ ASTNode **parseProgram(const char **input, int *outCount)
             else
             {
                 fprintf(stderr, "Unexpected identifier without type declaration\n");
+                exit(1);
+            }
+        }
+        else if (tok.type == TOKEN_SPITTIN)
+        {
+            Token next = nextToken(input);
+            if (next.type == TOKEN_FAX)
+            {
+                *input = start;
+                stmt = parseDebugging(input);
+            }
+            else
+            {
+                fprintf(stderr, "Unexpected 'spittin' without following 'fax'\n");
                 exit(1);
             }
         }

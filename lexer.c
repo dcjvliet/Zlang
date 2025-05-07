@@ -95,18 +95,45 @@ extern Token nextToken(const char **input)
     if (isdigit(**input))
     {
         const char *start = *input;
+        int isDouble = 0;
+
         while (isdigit(**input))
         {
             (*input)++;
+        }
+
+        if (**input == '.')
+        {
+            isDouble = 1;
+            (*input)++;
+
+            if (!isdigit(**input))
+            {
+                fprintf(stderr, "Invalid double format: '.' must be followed by a number");
+                exit(1);
+            }
+
+            while (isdigit(**input))
+            {
+                (*input)++;
+            }
         }
         int len = *input - start;
         char *num = malloc(len + 1);
         strncpy(num, start, len);
         num[len] = '\0';
-        return (Token){TOKEN_INT_LITERAL, num};
+        if (isDouble)
+        {
+            return (Token){TOKEN_FLOAT_LITERAL, num};
+        }
+        else
+        {
+            return (Token){TOKEN_INT_LITERAL, num};
+        }
     }
 
     // check for the name of variable (identifier token)
+    // also checks for "spittin fax" for debugging
     // check if character is alphanumeric
     if (isalnum(**input))
     {
@@ -124,6 +151,19 @@ extern Token nextToken(const char **input)
         if (strncmp(name, "int", 3) == 0)
         {
             return (Token){TOKEN_TYPE, "int"};
+        }
+        else if (strncmp(name, "float", 5) == 0)
+        {
+            return (Token){TOKEN_TYPE, "float"};
+        }
+        // see if it is deugging message
+        else if (strncmp(name, "spittin", 7) == 0)
+        {
+            return (Token){TOKEN_SPITTIN, NULL};
+        }
+        else if (strncmp(name, "fax", 3) == 0)
+        {
+            return (Token){TOKEN_FAX, NULL};
         }
 
         return (Token){TOKEN_IDENTIFIER, name};
