@@ -1,5 +1,0 @@
-:skull: This line tells the interpreter to print out debugging information (like variable declarations)
-spittin fax
-
-yap -> "Declaring a variable"
-x: int = 57

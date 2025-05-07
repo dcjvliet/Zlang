@@ -54,9 +54,13 @@ void executeProgram(ASTNode **nodes, int count)
                 }
             }
         }
-        else if (node->type == NODE_DEBUGGING)
+        else if (node->type == NODE_DEBUGGING_SHOW)
         {
             showDebugging = 1;
+        }
+        else if (node->type == NODE_DEBUGGING_HIDE)
+        {
+            showDebugging = 0;
         }
     }
 }

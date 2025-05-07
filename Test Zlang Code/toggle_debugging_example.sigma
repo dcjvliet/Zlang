@@ -1,0 +1,10 @@
+:skull: This line tells the interpreter to print out debugging information (like variable declarations)
+spittin fax
+
+yap -> "Declaring a variable"
+x: int = 57
+
+:skull: This line tells the interpreter to stop printing out debugging information
+spittin cap
+yap -> "Declaring another variable"
+y: float = 3.141

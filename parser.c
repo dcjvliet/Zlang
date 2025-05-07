@@ -4,7 +4,8 @@ typedef enum
 {
     NODE_YAP,
     NODE_VAR_DECL,
-    NODE_DEBUGGING
+    NODE_DEBUGGING_SHOW,
+    NODE_DEBUGGING_HIDE
 } ASTNodeType;
 
 typedef struct
@@ -139,7 +140,7 @@ ASTNode *parseVarDecl(const char **input)
     return node;
 }
 
-ASTNode *parseDebugging(const char **input)
+ASTNode *parseDebuggingShow(const char **input)
 {
     Token tok = nextToken(input);
     while (tok.type == TOKEN_COMMENT)
@@ -166,7 +167,38 @@ ASTNode *parseDebugging(const char **input)
     }
 
     ASTNode *node = malloc(sizeof(ASTNode));
-    node->type = NODE_DEBUGGING;
+    node->type = NODE_DEBUGGING_SHOW;
+    return node;
+}
+
+ASTNode *parseDebuggingHide(const char **input)
+{
+    Token tok = nextToken(input);
+    while (tok.type == TOKEN_COMMENT)
+    {
+        tok = nextToken(input);
+    }
+
+    if (tok.type != TOKEN_SPITTIN)
+    {
+        fprintf(stderr, "Expected 'spittin'\n");
+        exit(1);
+    }
+
+    tok = nextToken(input);
+    while (tok.type == TOKEN_COMMENT)
+    {
+        tok = nextToken(input);
+    }
+
+    if (tok.type != TOKEN_CAP)
+    {
+        fprintf(stderr, "Expected 'cap' after 'spittin'\n");
+        exit(1);
+    }
+
+    ASTNode *node = malloc(sizeof(ASTNode));
+    node->type = NODE_DEBUGGING_HIDE;
     return node;
 }
 
@@ -217,7 +249,12 @@ ASTNode **parseProgram(const char **input, int *outCount)
             if (next.type == TOKEN_FAX)
             {
                 *input = start;
-                stmt = parseDebugging(input);
+                stmt = parseDebuggingShow(input);
+            }
+            else if (next.type == TOKEN_CAP)
+            {
+                *input = start;
+                stmt = parseDebuggingHide(input);
             }
             else
             {

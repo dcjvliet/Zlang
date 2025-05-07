@@ -7,6 +7,7 @@ typedef enum
     TOKEN_EOF,     // end of file token
     TOKEN_SPITTIN, // start of debug token
     TOKEN_FAX,     // second part of debug token
+    TOKEN_CAP,     // token to turn off debug
 
     // tokens for printing
     TOKEN_YAP,    // print

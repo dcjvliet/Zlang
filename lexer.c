@@ -165,6 +165,10 @@ extern Token nextToken(const char **input)
         {
             return (Token){TOKEN_FAX, NULL};
         }
+        else if (strncmp(name, "cap", 3) == 0)
+        {
+            return (Token){TOKEN_CAP, NULL};
+        }
 
         return (Token){TOKEN_IDENTIFIER, name};
     }
