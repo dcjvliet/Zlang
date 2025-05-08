@@ -115,7 +115,7 @@ Value evaluateNode(ASTNode *node)
             result.floatValue = left + right;
             if (showDebugging)
             {
-                printf("Result: %f\n", result.floatValue);
+                printf("Result of %s + %s: %f\n", node->left->value, node->right->value, result.floatValue);
             }
         }
         else
@@ -124,7 +124,7 @@ Value evaluateNode(ASTNode *node)
             result.intValue = leftVal.intValue + rightVal.intValue;
             if (showDebugging)
             {
-                printf("Result: %d\n", result.intValue);
+                printf("Result of %s + %s: %d\n", node->left->value, node->right->value, result.intValue);
             }
         }
 
@@ -142,7 +142,7 @@ Value evaluateNode(ASTNode *node)
             result.floatValue = left - right;
             if (showDebugging)
             {
-                printf("Result: %f\n", result.floatValue);
+                printf("Result of %s - %s: %f\n", node->left->value, node->right->value, result.floatValue);
             }
         }
         else
@@ -151,7 +151,7 @@ Value evaluateNode(ASTNode *node)
             result.intValue = leftVal.intValue - rightVal.intValue;
             if (showDebugging)
             {
-                printf("Result: %d\n", result.intValue);
+                printf("Result of %s - %s: %d\n", node->left->value, node->right->value, result.intValue);
             }
         }
 
