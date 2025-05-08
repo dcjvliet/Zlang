@@ -129,6 +129,33 @@ Value evaluateNode(ASTNode *node)
 
         return result;
 
+    case NODE_SUBTRACTION:
+        leftVal = evaluateNode(node->left);
+        rightVal = evaluateNode(node->right);
+
+        if (leftVal.type == TYPE_FLOAT || rightVal.type == TYPE_FLOAT)
+        {
+            float left = (leftVal.type == TYPE_FLOAT) ? leftVal.floatValue : (float)leftVal.intValue;
+            float right = (rightVal.type == TYPE_FLOAT) ? rightVal.floatValue : (float)rightVal.intValue;
+            result.type = TYPE_FLOAT;
+            result.floatValue = left - right;
+            if (showDebugging)
+            {
+                printf("Result: %f\n", result.floatValue);
+            }
+        }
+        else
+        {
+            result.type = TYPE_INT;
+            result.intValue = leftVal.intValue - rightVal.intValue;
+            if (showDebugging)
+            {
+                printf("Result: %d\n", result.intValue);
+            }
+        }
+
+        return result;
+
     default:
         fprintf(stderr, "Unknown expression node\n");
         exit(1);

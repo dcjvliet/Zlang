@@ -1,0 +1,12 @@
+spittin fax
+:skull: An example of integer subtraction
+yap -> "Testing subtraction"
+x: int is lowkey 31
+y: int is lowkey 89
+x - y
+
+:skull: An example of float subtraction
+yap -> "Testing subtraction"
+z: float is lowkey 9.418
+w: int is lowkey 5
+z - w

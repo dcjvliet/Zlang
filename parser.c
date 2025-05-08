@@ -256,6 +256,72 @@ ASTNode *parseAddition(const char **input)
     return node;
 }
 
+ASTNode *parseSubtraction(const char **input)
+{
+    Token tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        fprintf(stderr, "Expected a variable identifier or literal at the beginning of a binary expression\n");
+        exit(1);
+    }
+    char *leftValue = tok.value;
+    TokenType leftType = tok.type;
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_SUBTRACTION)
+    {
+        fprintf(stderr, "Expected '-' after a variable identifier or literal\n");
+        exit(1);
+    }
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        fprintf(stderr, "Expected a variable identifier or literal after '+'\n");
+        exit(1);
+    }
+    char *rightValue = tok.value;
+    TokenType rightType = tok.type;
+
+    ASTNode *node = malloc(sizeof(ASTNode));
+    node->type = NODE_SUBTRACTION;
+    ASTNode *left = malloc(sizeof(ASTNode));
+    if (leftType == TOKEN_IDENTIFIER)
+    {
+        left->type = NODE_IDENTIFIER;
+    }
+    else if (leftType == TOKEN_INT_LITERAL)
+    {
+        left->type = NODE_INT_LITERAL;
+    }
+    else if (leftType == TOKEN_FLOAT_LITERAL)
+    {
+        left->type = NODE_FLOAT_LITERAL;
+    }
+    left->value = leftValue;
+
+    ASTNode *right = malloc(sizeof(ASTNode));
+    if (rightType == TOKEN_IDENTIFIER)
+    {
+        right->type = NODE_IDENTIFIER;
+    }
+    else if (rightType == TOKEN_INT_LITERAL)
+    {
+        right->type = NODE_INT_LITERAL;
+    }
+    else if (rightType == TOKEN_FLOAT_LITERAL)
+    {
+        right->type = NODE_FLOAT_LITERAL;
+    }
+    right->value = rightValue;
+    node->left = left;
+    node->right = right;
+    return node;
+}
+
 ASTNode **parseProgram(const char **input, int *outCount)
 {
     int capacity = 8;
@@ -295,6 +361,11 @@ ASTNode **parseProgram(const char **input, int *outCount)
             {
                 *input = start;
                 stmt = parseAddition(input);
+            }
+            else if (next.type == TOKEN_SUBTRACTION)
+            {
+                *input = start;
+                stmt = parseSubtraction(input);
             }
             else
             {
