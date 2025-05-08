@@ -98,8 +98,9 @@ Value evaluateNode(ASTNode *node)
                 }
             }
         }
-        fprintf(stderr, "Undefined variable %s\n", node->value);
-        exit(1);
+        // fprintf(stderr, "Undefined variable %s\n", node->value);
+        // exit(1);
+        PARSE_ERROR("Undefined variable %s\n", node->line, node->value);
 
     case NODE_ADDITION:
         Value leftVal = evaluateNode(node->left);

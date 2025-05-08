@@ -3,12 +3,21 @@
 #include <string.h>
 #include <ctype.h>
 #include "token.h"
+#include "helper.c"
 
-extern Token nextToken(const char **input)
+extern Token nextToken(const char **input, int *line)
 {
     // skip it if it's whitespace - this allows arbitrary whitespace
     while (isspace(**input))
         (*input)++;
+
+    // check for newline
+    if (**input == '\n')
+    {
+        (*line)++;
+        (*input)++;
+        return (Token){TOKEN_NEWLINE, NULL};
+    }
 
     // check for EOF token
     if (**input == '\0')
@@ -37,6 +46,7 @@ extern Token nextToken(const char **input)
         *input += 7;
         while (**input != '\n' && **input != '\0')
             (*input)++;
+        (*line)++;
         return (Token){TOKEN_COMMENT, NULL};
     }
 
@@ -52,8 +62,6 @@ extern Token nextToken(const char **input)
             // if we go to a newline before closing the string or ending the file
             if (**input == '\n')
             {
-                fprintf(stderr, "Unclosed string");
-                exit(1);
             }
 
             (*input)++;
@@ -62,8 +70,7 @@ extern Token nextToken(const char **input)
         // if there was no closing quote
         if (**input == '\0')
         {
-            fprintf(stderr, "Unclosed string");
-            exit(1);
+            PARSE_ERROR("Unclosed string", *line);
         }
 
         int len = *input - start;
@@ -73,6 +80,7 @@ extern Token nextToken(const char **input)
         str[len] = '\0';
 
         (*input)++;
+        (*line)++;
 
         return (Token){TOKEN_STRING, str};
     }
@@ -119,7 +127,7 @@ extern Token nextToken(const char **input)
         return (Token){TOKEN_MODULO, NULL};
     }
 
-    // check for the int literal token
+    // check for the int/float literal token
     if (isdigit(**input))
     {
         const char *start = *input;
@@ -137,8 +145,7 @@ extern Token nextToken(const char **input)
 
             if (!isdigit(**input))
             {
-                fprintf(stderr, "Invalid double format: '.' must be followed by a number");
-                exit(1);
+                PARSE_ERROR("Invalid float format: '.' must be followed by a number", *line);
             }
 
             while (isdigit(**input))
@@ -150,6 +157,7 @@ extern Token nextToken(const char **input)
         char *num = malloc(len + 1);
         strncpy(num, start, len);
         num[len] = '\0';
+        (*line)++;
         if (isDouble)
         {
             return (Token){TOKEN_FLOAT_LITERAL, num};

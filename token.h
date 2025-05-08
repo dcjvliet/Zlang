@@ -8,6 +8,7 @@ typedef enum
     TOKEN_SPITTIN, // start of debug token
     TOKEN_FAX,     // second part of debug token
     TOKEN_CAP,     // token to turn off debug
+    TOKEN_NEWLINE, // \n character
 
     // tokens for printing
     TOKEN_YAP,    // print
