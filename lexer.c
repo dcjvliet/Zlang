@@ -76,6 +76,10 @@ extern Token nextToken(const char **input, int *line)
         int len = *input - start;
 
         char *str = malloc(len + 1);
+        if (!str)
+        {
+            PARSE_ERROR("Error allocating memory\n", -1);
+        }
         strncpy(str, start, len);
         str[len] = '\0';
 
@@ -155,6 +159,10 @@ extern Token nextToken(const char **input, int *line)
         }
         int len = *input - start;
         char *num = malloc(len + 1);
+        if (!num)
+        {
+            PARSE_ERROR("Error allocating memory\n", -1);
+        }
         strncpy(num, start, len);
         num[len] = '\0';
         (*line)++;
@@ -180,6 +188,10 @@ extern Token nextToken(const char **input, int *line)
         }
         int len = *input - start;
         char *name = malloc(len + 1);
+        if (!name)
+        {
+            PARSE_ERROR("Error allocating memory\n", -1);
+        }
         strncpy(name, start, len);
         name[len] = '\0';
 

@@ -44,6 +44,31 @@ Token skipComments(const char **input)
     return tok;
 }
 
+ASTNode *createNode(TokenType type, char *value)
+{
+    ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
+
+    if (type == TOKEN_IDENTIFIER)
+    {
+        node->type = NODE_IDENTIFIER;
+    }
+    else if (type == TOKEN_INT_LITERAL)
+    {
+        node->type = NODE_INT_LITERAL;
+    }
+    else if (type == TOKEN_FLOAT_LITERAL)
+    {
+        node->type = NODE_FLOAT_LITERAL;
+    }
+    node->value = value;
+    node->line = currentLine;
+    return node;
+}
+
 ASTNode *parseYap(const char **input)
 {
     // skip past any comments
@@ -72,6 +97,10 @@ ASTNode *parseYap(const char **input)
     }
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_YAP;
     node->value = tok.value;
     node->line = currentLine;
@@ -132,6 +161,10 @@ ASTNode *parseVarDecl(const char **input)
     char *value = tok.value;
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_VAR_DECL;
     node->name = varName;
     node->varType = varType;
@@ -157,6 +190,10 @@ ASTNode *parseDebuggingShow(const char **input)
     }
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_DEBUGGING_SHOW;
     node->line = currentLine;
     return node;
@@ -179,6 +216,10 @@ ASTNode *parseDebuggingHide(const char **input)
     }
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_DEBUGGING_HIDE;
     node->line = currentLine;
     return node;
@@ -212,41 +253,14 @@ ASTNode *parseAddition(const char **input)
     TokenType rightType = tok.type;
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_ADDITION;
     node->line = currentLine;
-    ASTNode *left = malloc(sizeof(ASTNode));
-    if (leftType == TOKEN_IDENTIFIER)
-    {
-        left->type = NODE_IDENTIFIER;
-    }
-    else if (leftType == TOKEN_INT_LITERAL)
-    {
-        left->type = NODE_INT_LITERAL;
-    }
-    else if (leftType == TOKEN_FLOAT_LITERAL)
-    {
-        left->type = NODE_FLOAT_LITERAL;
-    }
-    left->value = leftValue;
-    left->line = currentLine;
-
-    ASTNode *right = malloc(sizeof(ASTNode));
-    if (rightType == TOKEN_IDENTIFIER)
-    {
-        right->type = NODE_IDENTIFIER;
-    }
-    else if (rightType == TOKEN_INT_LITERAL)
-    {
-        right->type = NODE_INT_LITERAL;
-    }
-    else if (rightType == TOKEN_FLOAT_LITERAL)
-    {
-        right->type = NODE_FLOAT_LITERAL;
-    }
-    right->value = rightValue;
-    right->line = currentLine;
-    node->left = left;
-    node->right = right;
+    node->left = createNode(leftType, leftValue);
+    node->right = createNode(rightType, rightValue);
     return node;
 }
 
@@ -278,41 +292,14 @@ ASTNode *parseSubtraction(const char **input)
     TokenType rightType = tok.type;
 
     ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     node->type = NODE_SUBTRACTION;
     node->line = currentLine;
-    ASTNode *left = malloc(sizeof(ASTNode));
-    if (leftType == TOKEN_IDENTIFIER)
-    {
-        left->type = NODE_IDENTIFIER;
-    }
-    else if (leftType == TOKEN_INT_LITERAL)
-    {
-        left->type = NODE_INT_LITERAL;
-    }
-    else if (leftType == TOKEN_FLOAT_LITERAL)
-    {
-        left->type = NODE_FLOAT_LITERAL;
-    }
-    left->value = leftValue;
-    left->line = currentLine;
-
-    ASTNode *right = malloc(sizeof(ASTNode));
-    if (rightType == TOKEN_IDENTIFIER)
-    {
-        right->type = NODE_IDENTIFIER;
-    }
-    else if (rightType == TOKEN_INT_LITERAL)
-    {
-        right->type = NODE_INT_LITERAL;
-    }
-    else if (rightType == TOKEN_FLOAT_LITERAL)
-    {
-        right->type = NODE_FLOAT_LITERAL;
-    }
-    right->value = rightValue;
-    right->line = currentLine;
-    node->left = left;
-    node->right = right;
+    node->left = createNode(leftType, leftValue);
+    node->right = createNode(rightType, rightValue);
     return node;
 }
 
@@ -320,6 +307,10 @@ ASTNode **parseProgram(const char **input, int *outCount)
 {
     int capacity = 8;
     ASTNode **nodes = malloc(sizeof(ASTNode *) * capacity);
+    if (!nodes)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
     int count = 0;
 
     while (1)
@@ -393,6 +384,10 @@ ASTNode **parseProgram(const char **input, int *outCount)
         {
             capacity *= 2;
             nodes = realloc(nodes, sizeof(ASTNode *) * capacity);
+            if (!nodes)
+            {
+                PARSE_ERROR("Error allocating memory\n", -1);
+            }
         }
 
         nodes[count++] = stmt;

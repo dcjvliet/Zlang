@@ -41,8 +41,7 @@ Value evaluateNode(ASTNode *node)
     case NODE_VAR_DECL:
         if (varCount >= MAX_VARS)
         {
-            fprintf(stderr, "Variable table overflow\n");
-            exit(1);
+            PARSE_ERROR("Variable table overflow\n", -1);
         }
 
         // add a new variable to the variable table
@@ -98,8 +97,6 @@ Value evaluateNode(ASTNode *node)
                 }
             }
         }
-        // fprintf(stderr, "Undefined variable %s\n", node->value);
-        // exit(1);
         PARSE_ERROR("Undefined variable %s\n", node->line, node->value);
 
     case NODE_ADDITION:
@@ -158,8 +155,7 @@ Value evaluateNode(ASTNode *node)
         return result;
 
     default:
-        fprintf(stderr, "Unknown expression node\n");
-        exit(1);
+        PARSE_ERROR("Unknown expression node\n", -1);
     }
 
     Value empty;
@@ -181,8 +177,7 @@ char *readFile(const char *filename)
     FILE *file = fopen(filename, "r");
     if (!file)
     {
-        perror("Error opening file");
-        exit(1);
+        PARSE_ERROR("Error opening file\n", -1);
     }
 
     fseek(file, 0, SEEK_END);
@@ -192,8 +187,7 @@ char *readFile(const char *filename)
     char *buffer = malloc(length + 1);
     if (!buffer)
     {
-        perror("Error allocating buffer");
-        exit(1);
+        PARSE_ERROR("Error allocating buffer", -1);
     }
 
     fread(buffer, 1, length, file);
