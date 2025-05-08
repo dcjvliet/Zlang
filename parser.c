@@ -129,7 +129,7 @@ ASTNode *parseVarDecl(const char **input)
     tok = skipComments(input);
 
     // make sure we have a value for variable
-    if ((tok.type != TOKEN_INT_LITERAL && strncmp(varType, "int", 3) == 0) || (tok.type != TOKEN_FLOAT_LITERAL && strncmp(varType, "float", 5) == 0))
+    if ((tok.type != TOKEN_INT_LITERAL && strncmp(varType, "int", 3) == 0) || (tok.type != TOKEN_FLOAT_LITERAL && strncmp(varType, "float", 5) == 0 && tok.type != TOKEN_INT_LITERAL))
     {
         fprintf(stderr, "Expected variable literal after 'is lowkey'\n");
         exit(1);
