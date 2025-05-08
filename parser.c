@@ -40,7 +40,7 @@ ASTNode *parseYap(const char **input)
     // make sure we have an arrow
     if (tok.type != TOKEN_ARROW)
     {
-        fprintf(stderr, "Expected '->' after 'print'\n");
+        fprintf(stderr, "Expected '->' after 'yap'\n");
         exit(1);
     }
 
@@ -140,7 +140,7 @@ ASTNode *parseVarDecl(const char **input)
     // make sure we have a value for variable
     if ((tok.type != TOKEN_INT_LITERAL && strncmp(varType, "int", 3) == 0) || (tok.type != TOKEN_FLOAT_LITERAL && strncmp(varType, "float", 5) == 0))
     {
-        fprintf(stderr, "Expected variable literal after '='\n");
+        fprintf(stderr, "Expected variable literal after 'is lowkey'\n");
         exit(1);
     }
     char *value = tok.value;
