@@ -15,13 +15,20 @@ typedef enum
     TOKEN_STRING, // message to print
 
     // tokens for declaring variables
-    TOKEN_IDENTIFIER,  // variable name
-    TOKEN_COLON,       // :
-    TOKEN_TYPE,        // type of the variable
-    TOKEN_IS,          // is
-    TOKEN_LOWKEY,      // lowkey; combined with 'is' is equivalent to =
-    TOKEN_INT_LITERAL, // value of an int type
-    TOKEN_FLOAT_LITERAL
+    TOKEN_IDENTIFIER,    // variable name
+    TOKEN_COLON,         // :
+    TOKEN_TYPE,          // type of the variable
+    TOKEN_IS,            // is
+    TOKEN_LOWKEY,        // lowkey; combined with 'is' is equivalent to =
+    TOKEN_INT_LITERAL,   // value of an int type
+    TOKEN_FLOAT_LITERAL, // value of a float type
+
+    // tokens for doing simple arithmetic (5 main operations)
+    TOKEN_ADDITION,       // +
+    TOKEN_SUBTRACTION,    // -
+    TOKEN_MULTIPLICATION, // *
+    TOKEN_DIVISION,       // /
+    TOKEN_MODULO          // %
 } TokenType;
 
 // define token

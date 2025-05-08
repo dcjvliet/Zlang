@@ -1,0 +1,14 @@
+spittin fax
+
+:skull: An example of integer addition
+yap -> "Testing addition"
+x: int is lowkey 13
+y: int is lowkey 24
+x + y
+
+:skull: An example of float addition
+yap -> "Testing addition"
+z: float is lowkey 3.141
+w: int is lowkey 9
+z + w
+

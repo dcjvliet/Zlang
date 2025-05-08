@@ -84,6 +84,41 @@ extern Token nextToken(const char **input)
         return (Token){TOKEN_COLON, NULL};
     }
 
+    // check for addition token
+    if (**input == '+')
+    {
+        (*input)++;
+        return (Token){TOKEN_ADDITION, NULL};
+    }
+
+    // check for subtraction token
+    if (**input == '-')
+    {
+        (*input)++;
+        return (Token){TOKEN_SUBTRACTION, NULL};
+    }
+
+    // check for multiplication token
+    if (**input == '*')
+    {
+        (*input)++;
+        return (Token){TOKEN_MULTIPLICATION, NULL};
+    }
+
+    // check for division token
+    if (**input == '/')
+    {
+        (*input)++;
+        return (Token){TOKEN_DIVISION, NULL};
+    }
+
+    // check for modulo token
+    if (**input == '%')
+    {
+        (*input)++;
+        return (Token){TOKEN_MODULO, NULL};
+    }
+
     // check for the int literal token
     if (isdigit(**input))
     {

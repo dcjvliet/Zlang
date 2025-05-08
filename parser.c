@@ -5,25 +5,46 @@ typedef enum
     NODE_YAP,
     NODE_VAR_DECL,
     NODE_DEBUGGING_SHOW,
-    NODE_DEBUGGING_HIDE
+    NODE_DEBUGGING_HIDE,
+    NODE_ADDITION,
+    NODE_SUBTRACTION,
+    NODE_MULTIPLICATION,
+    NODE_DIVISION,
+    NODE_MODULO,
+    NODE_INT_LITERAL,
+    NODE_FLOAT_LITERAL,
+    NODE_IDENTIFIER
 } ASTNodeType;
 
-typedef struct
+typedef struct ASTNode
 {
     ASTNodeType type;
+
+    // for variable declarations
     char *name;
     char *varType;
     char *value;
+
+    // for binary operations
+    struct ASTNode *left;
+    struct ASTNode *right;
 } ASTNode;
 
-ASTNode *parseYap(const char **input)
+Token skipComments(const char **input)
 {
-    // skip past any comments
     Token tok = nextToken(input);
     while (tok.type == TOKEN_COMMENT)
     {
         tok = nextToken(input);
     }
+
+    return tok;
+}
+
+ASTNode *parseYap(const char **input)
+{
+    // skip past any comments
+    Token tok = skipComments(input);
 
     // make sure we have a print
     if (tok.type != TOKEN_YAP)
@@ -32,11 +53,8 @@ ASTNode *parseYap(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
+
     // make sure we have an arrow
     if (tok.type != TOKEN_ARROW)
     {
@@ -44,11 +62,8 @@ ASTNode *parseYap(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
+
     // make sure we have something to print
     if (tok.type != TOKEN_STRING)
     {
@@ -64,11 +79,7 @@ ASTNode *parseYap(const char **input)
 
 ASTNode *parseVarDecl(const char **input)
 {
-    Token tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    Token tok = skipComments(input);
 
     // make sure we have a name
     if (tok.type != TOKEN_IDENTIFIER)
@@ -78,11 +89,7 @@ ASTNode *parseVarDecl(const char **input)
     }
     char *varName = tok.value;
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     // make sure we have a colon
     if (tok.type != TOKEN_COLON)
@@ -91,11 +98,7 @@ ASTNode *parseVarDecl(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     // make sure we have a variable type
     if (tok.type != TOKEN_TYPE)
@@ -105,11 +108,7 @@ ASTNode *parseVarDecl(const char **input)
     }
     char *varType = tok.value;
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     // make sure we have an 'is'
     if (tok.type != TOKEN_IS)
@@ -118,11 +117,7 @@ ASTNode *parseVarDecl(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     // make sure we have a 'lowkey'
     if (tok.type != TOKEN_LOWKEY)
@@ -131,11 +126,7 @@ ASTNode *parseVarDecl(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     // make sure we have a value for variable
     if ((tok.type != TOKEN_INT_LITERAL && strncmp(varType, "int", 3) == 0) || (tok.type != TOKEN_FLOAT_LITERAL && strncmp(varType, "float", 5) == 0))
@@ -155,11 +146,7 @@ ASTNode *parseVarDecl(const char **input)
 
 ASTNode *parseDebuggingShow(const char **input)
 {
-    Token tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    Token tok = skipComments(input);
 
     if (tok.type != TOKEN_SPITTIN)
     {
@@ -167,11 +154,7 @@ ASTNode *parseDebuggingShow(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     if (tok.type != TOKEN_FAX)
     {
@@ -186,11 +169,7 @@ ASTNode *parseDebuggingShow(const char **input)
 
 ASTNode *parseDebuggingHide(const char **input)
 {
-    Token tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    Token tok = skipComments(input);
 
     if (tok.type != TOKEN_SPITTIN)
     {
@@ -198,11 +177,7 @@ ASTNode *parseDebuggingHide(const char **input)
         exit(1);
     }
 
-    tok = nextToken(input);
-    while (tok.type == TOKEN_COMMENT)
-    {
-        tok = nextToken(input);
-    }
+    tok = skipComments(input);
 
     if (tok.type != TOKEN_CAP)
     {
@@ -212,6 +187,72 @@ ASTNode *parseDebuggingHide(const char **input)
 
     ASTNode *node = malloc(sizeof(ASTNode));
     node->type = NODE_DEBUGGING_HIDE;
+    return node;
+}
+
+ASTNode *parseAddition(const char **input)
+{
+    Token tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        fprintf(stderr, "Expected a variable identifier or literal at the beginning of a binary expression\n");
+        exit(1);
+    }
+    char *leftValue = tok.value;
+    TokenType leftType = tok.type;
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_ADDITION)
+    {
+        fprintf(stderr, "Expected '+' after a variable identifier or literal\n");
+        exit(1);
+    }
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        fprintf(stderr, "Expected a variable identifier or literal after '+'\n");
+        exit(1);
+    }
+    char *rightValue = tok.value;
+    TokenType rightType = tok.type;
+
+    ASTNode *node = malloc(sizeof(ASTNode));
+    node->type = NODE_ADDITION;
+    ASTNode *left = malloc(sizeof(ASTNode));
+    if (leftType == TOKEN_IDENTIFIER)
+    {
+        left->type = NODE_IDENTIFIER;
+    }
+    else if (leftType == TOKEN_INT_LITERAL)
+    {
+        left->type = NODE_INT_LITERAL;
+    }
+    else if (leftType == TOKEN_FLOAT_LITERAL)
+    {
+        left->type = NODE_FLOAT_LITERAL;
+    }
+    left->value = leftValue;
+
+    ASTNode *right = malloc(sizeof(ASTNode));
+    if (rightType == TOKEN_IDENTIFIER)
+    {
+        right->type = NODE_IDENTIFIER;
+    }
+    else if (rightType == TOKEN_INT_LITERAL)
+    {
+        right->type = NODE_INT_LITERAL;
+    }
+    else if (rightType == TOKEN_FLOAT_LITERAL)
+    {
+        right->type = NODE_FLOAT_LITERAL;
+    }
+    right->value = rightValue;
+    node->left = left;
+    node->right = right;
     return node;
 }
 
@@ -249,6 +290,11 @@ ASTNode **parseProgram(const char **input, int *outCount)
             {
                 *input = start;
                 stmt = parseVarDecl(input);
+            }
+            else if (next.type == TOKEN_ADDITION)
+            {
+                *input = start;
+                stmt = parseAddition(input);
             }
             else
             {
