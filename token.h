@@ -18,7 +18,8 @@ typedef enum
     TOKEN_IDENTIFIER,  // variable name
     TOKEN_COLON,       // :
     TOKEN_TYPE,        // type of the variable
-    TOKEN_EQUAL,       // =
+    TOKEN_IS,          // is
+    TOKEN_LOWKEY,      // lowkey; combined with 'is' is equivalent to =
     TOKEN_INT_LITERAL, // value of an int type
     TOKEN_FLOAT_LITERAL
 } TokenType;

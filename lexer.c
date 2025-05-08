@@ -84,13 +84,6 @@ extern Token nextToken(const char **input)
         return (Token){TOKEN_COLON, NULL};
     }
 
-    // check for equals token
-    if (**input == '=')
-    {
-        (*input)++;
-        return (Token){TOKEN_EQUAL, NULL};
-    }
-
     // check for the int literal token
     if (isdigit(**input))
     {
@@ -168,6 +161,15 @@ extern Token nextToken(const char **input)
         else if (strncmp(name, "cap", 3) == 0)
         {
             return (Token){TOKEN_CAP, NULL};
+        }
+        // check for is and lowkey tokens
+        else if (strncmp(name, "is", 2) == 0)
+        {
+            return (Token){TOKEN_IS, NULL};
+        }
+        else if (strncmp(name, "lowkey", 6) == 0)
+        {
+            return (Token){TOKEN_LOWKEY, NULL};
         }
 
         return (Token){TOKEN_IDENTIFIER, name};

@@ -1,4 +1,4 @@
 spittin fax
 yap -> "Creating a variable"
-:skull: create a new variable called x, of type int, with the value 42
-x: float = 42.5
+:skull: create a new variable called x, of type float, with the value 42.5
+x: float is lowkey 42.5

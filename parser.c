@@ -111,10 +111,23 @@ ASTNode *parseVarDecl(const char **input)
         tok = nextToken(input);
     }
 
-    // make sure we have an equals sign
-    if (tok.type != TOKEN_EQUAL)
+    // make sure we have an 'is'
+    if (tok.type != TOKEN_IS)
     {
-        fprintf(stderr, "Expected an '=' after variable type\n");
+        fprintf(stderr, "Expected an 'is' after variable type\n");
+        exit(1);
+    }
+
+    tok = nextToken(input);
+    while (tok.type == TOKEN_COMMENT)
+    {
+        tok = nextToken(input);
+    }
+
+    // make sure we have a 'lowkey'
+    if (tok.type != TOKEN_LOWKEY)
+    {
+        fprintf(stderr, "Expected a 'lowkey' after 'is'\n");
         exit(1);
     }
 
