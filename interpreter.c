@@ -154,6 +154,68 @@ Value evaluateNode(ASTNode *node)
 
         return result;
 
+    case NODE_MULTIPLICATION:
+        leftVal = evaluateNode(node->left);
+        rightVal = evaluateNode(node->right);
+
+        if (leftVal.type == TYPE_FLOAT || rightVal.type == TYPE_FLOAT)
+        {
+            float left = (leftVal.type == TYPE_FLOAT) ? leftVal.floatValue : (float)leftVal.intValue;
+            float right = (rightVal.type == TYPE_FLOAT) ? rightVal.floatValue : (float)rightVal.intValue;
+            result.type = TYPE_FLOAT;
+            result.floatValue = left * right;
+            if (showDebugging)
+            {
+                printf("Result of %s * %s: %f\n", node->left->value, node->right->value, result.floatValue);
+            }
+        }
+        else
+        {
+            result.type = TYPE_INT;
+            result.intValue = leftVal.intValue * rightVal.intValue;
+            if (showDebugging)
+            {
+                printf("Result of %s * %s: %d\n", node->left->value, node->right->value, result.intValue);
+            }
+        }
+
+        return result;
+
+    case NODE_DIVISION:
+        leftVal = evaluateNode(node->left);
+        rightVal = evaluateNode(node->right);
+
+        if (leftVal.type == TYPE_FLOAT || rightVal.type == TYPE_FLOAT)
+        {
+            float left = (leftVal.type == TYPE_FLOAT) ? leftVal.floatValue : (float)leftVal.intValue;
+            float right = (rightVal.type == TYPE_FLOAT) ? rightVal.floatValue : (float)rightVal.intValue;
+            result.type = TYPE_FLOAT;
+            if (right == 0)
+            {
+                PARSE_ERROR("Error trying to divide by 0\n", node->line);
+            }
+            result.floatValue = left / right;
+            if (showDebugging)
+            {
+                printf("Result of %s / %s: %f\n", node->left->value, node->right->value, result.floatValue);
+            }
+        }
+        else
+        {
+            result.type = TYPE_INT;
+            if (rightVal.intValue == 0)
+            {
+                PARSE_ERROR("Error trying to divide by 0\n", node->line);
+            }
+            result.intValue = leftVal.intValue / rightVal.intValue;
+            if (showDebugging)
+            {
+                printf("Result of %s / %s: %d\n", node->left->value, node->right->value, result.intValue);
+            }
+        }
+
+        return result;
+
     default:
         PARSE_ERROR("Unknown expression node\n", -1);
     }

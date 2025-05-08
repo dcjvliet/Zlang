@@ -1,0 +1,13 @@
+spittin fax
+
+:skull: An example of integer multiplication
+yap -> "Testing multiplication"
+x: int is lowkey 13
+y: int is lowkey 24
+x * y
+
+:skull: An example of float multiplication
+yap -> "Testing multiplication"
+z: float is lowkey 3.141
+w: int is lowkey 9
+z * w
