@@ -124,13 +124,6 @@ extern Token nextToken(const char **input, int *line)
         return (Token){TOKEN_DIVISION, NULL};
     }
 
-    // check for modulo token
-    if (**input == '%')
-    {
-        (*input)++;
-        return (Token){TOKEN_MODULO, NULL};
-    }
-
     // check for the int/float literal token
     if (isdigit(**input))
     {
@@ -225,6 +218,10 @@ extern Token nextToken(const char **input, int *line)
         else if (strncmp(name, "lowkey", 6) == 0)
         {
             return (Token){TOKEN_LOWKEY, NULL};
+        }
+        else if (strncmp(name, "mod", 3) == 0)
+        {
+            return (Token){TOKEN_MODULO, NULL};
         }
 
         return (Token){TOKEN_IDENTIFIER, name};

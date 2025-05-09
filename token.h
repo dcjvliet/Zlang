@@ -29,7 +29,7 @@ typedef enum
     TOKEN_SUBTRACTION,    // -
     TOKEN_MULTIPLICATION, // *
     TOKEN_DIVISION,       // /
-    TOKEN_MODULO          // %
+    TOKEN_MODULO          // mod
 } TokenType;
 
 // define token

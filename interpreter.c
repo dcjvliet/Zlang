@@ -1,4 +1,5 @@
 #include "parser.c"
+#include "value.h"
 
 typedef struct
 {
@@ -7,23 +8,6 @@ typedef struct
     int intValue;
     float floatValue;
 } Variable;
-
-typedef enum
-{
-    TYPE_INT,
-    TYPE_FLOAT,
-    TYPE_DEFAULT
-} ValueType;
-
-typedef struct
-{
-    ValueType type;
-    union
-    {
-        int intValue;
-        float floatValue;
-    };
-} Value;
 
 #define MAX_VARS 1024
 Variable varTable[MAX_VARS];
@@ -214,6 +198,34 @@ Value evaluateNode(ASTNode *node)
             }
         }
 
+        return result;
+
+    case NODE_MODULO:
+        leftVal = evaluateNode(node->left);
+        rightVal = evaluateNode(node->right);
+        // it doesn't matter whether they are ints or floats, other than the type on what we actually return
+        float left = (leftVal.type == TYPE_FLOAT) ? leftVal.floatValue : (float)leftVal.intValue;
+        float right = (rightVal.type == TYPE_FLOAT) ? rightVal.floatValue : (float)rightVal.intValue;
+        float mod = modulo(left, right);
+
+        if (leftVal.type == TYPE_FLOAT || rightVal.type == TYPE_FLOAT)
+        {
+            result.type = TYPE_FLOAT;
+            result.floatValue = mod;
+            if (showDebugging)
+            {
+                printf("Result of %s mod %s: %f\n", node->left->value, node->right->value, result.floatValue);
+            }
+        }
+        else
+        {
+            result.type = TYPE_INT;
+            result.intValue = (int)mod;
+            if (showDebugging)
+            {
+                printf("Result of %s mod %s: %d\n", node->left->value, node->right->value, result.intValue);
+            }
+        }
         return result;
 
     default:

@@ -381,6 +381,45 @@ ASTNode *parseDivision(const char **input)
     return node;
 }
 
+ASTNode *parseModulo(const char **input)
+{
+    Token tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        PARSE_ERROR("Expected a variable identifier or literal at the beginning of modulo\n", currentLine);
+    }
+    char *leftValue = tok.value;
+    TokenType leftType = tok.type;
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_MODULO)
+    {
+        PARSE_ERROR("Expected 'mod' after a variable identifier or literal\n", currentLine);
+    }
+
+    tok = skipComments(input);
+
+    if (tok.type != TOKEN_IDENTIFIER && tok.type != TOKEN_INT_LITERAL && tok.type != TOKEN_FLOAT_LITERAL)
+    {
+        PARSE_ERROR("Expected a variable identifier or literal after 'mod'\n", currentLine);
+    }
+    char *rightValue = tok.value;
+    TokenType rightType = tok.type;
+
+    ASTNode *node = malloc(sizeof(ASTNode));
+    if (!node)
+    {
+        PARSE_ERROR("Error allocating memory\n", -1);
+    }
+    node->type = NODE_MODULO;
+    node->line = currentLine;
+    node->left = createNode(leftType, leftValue);
+    node->right = createNode(rightType, rightValue);
+    return node;
+}
+
 ASTNode **parseProgram(const char **input, int *outCount)
 {
     int capacity = 8;
@@ -439,6 +478,11 @@ ASTNode **parseProgram(const char **input, int *outCount)
             {
                 *input = start;
                 stmt = parseDivision(input);
+            }
+            else if (next.type == TOKEN_MODULO)
+            {
+                *input = start;
+                stmt = parseModulo(input);
             }
             else
             {

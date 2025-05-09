@@ -1,0 +1,13 @@
+spittin fax
+
+:skull: An example of integer modulo
+yap -> "Testing modulo"
+x: int is lowkey 13
+y: int is lowkey 5
+x mod y
+
+:skull: An example of float modulo
+yap -> "Testing modulo"
+z: float is lowkey 6.7
+w: float is lowkey 3.2
+z mod w

@@ -17,3 +17,9 @@ extern void PARSE_ERROR(const char *msg, int currentLine, ...)
     vfprintf(stderr, msg, args);
     exit(1);
 }
+
+extern float modulo(float a, float b)
+{
+    int quotient = (int)(a / b);
+    return a - (b * quotient);
+}
